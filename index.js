@@ -8,6 +8,8 @@ import {
     ScanCommand,
     UpdateCommand
 } from "@aws-sdk/lib-dynamodb";
+import {configDotenv} from "dotenv";
+configDotenv();
 
 import {GetObjectCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
@@ -15,19 +17,17 @@ import * as fs from "fs";
 
 import { v4 as uuidv4 } from 'uuid';
 
-
 const app = express();
 
-const client = new DynamoDBClient({region: "eu-north-1"});
+const client = new DynamoDBClient({region: process.env.region});
 const docClient = DynamoDBDocumentClient.from(client, {marshallOptions: {removeUndefinedValues: true,}});
-const s3Client = new S3Client({region: "eu-north-1"});
+const s3Client = new S3Client({region: process.env.region});
 
 import multer from 'multer'
 const upload = multer({ dest: 'uploads/' })
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
 
 app.get('/', (req, res) => {
     res.send("Hello")
